@@ -15,11 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone')->nullable()->unique();
+            $table->string('phone')->nullable()->unique(); // Opsional, tapi bagus untuk verifikasi
             $table->string('password');
+
+            // REKOMENDASI TAMBAHAN:
+            $table->string('avatar')->nullable(); // Untuk foto profil
+            $table->string('institution')->nullable(); // Penting untuk Kurator (misal: "Dinas Budaya Majene")
+            $table->text('bio')->nullable(); // Deskripsi singkat user
+            $table->boolean('is_active')->default(true); // Untuk ban user jika spamming
+
             $table->enum('role', ['USER', 'CURATOR', 'ADMIN'])->default('USER');
             $table->rememberToken();
             $table->timestamps();
+            // Soft Deletes (Opsional tapi disarankan agar data user tidak hilang permanen jika salah hapus)
+            // $table->softDeletes(); 
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
