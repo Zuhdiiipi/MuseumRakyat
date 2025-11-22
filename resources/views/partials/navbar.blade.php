@@ -20,7 +20,7 @@
             <button class="btn-nav btn-nav-signup">Sign Up</button>
         </div>
 
-        {{-- HAMBURGER MOBILE --}}
+        {{-- HAMBURGER --}}
         <button class="hamburger mobile-only" id="hamburgerBtn">
             ☰
         </button>

@@ -106,7 +106,7 @@
             <p class="about-text">
                 MuseumRakyat hadir sebagai ruang digital agar masyarakat, komunitas adat,
                 akademisi, dan lembaga kebudayaan dapat berkontribusi langsung melalui
-                dokumentasi foto, narasi, dan catatan budaya.
+                dokumentasi foto, narasi, dan catatan budaya .
             </p>
         </div>
 

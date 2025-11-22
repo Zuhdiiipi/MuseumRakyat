@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    {{-- Bagian bawah footer --}}
+    {{-- Bagian footer --}}
     <div class="footer-bottom">
         <div class="footer-bottom-inner">
             <p>© {{ date('Y') }} MuseumRakyat. Semua hak dilindungi.</p>
