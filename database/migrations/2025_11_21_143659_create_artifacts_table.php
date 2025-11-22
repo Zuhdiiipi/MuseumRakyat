@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('material')->nullable();
             $table->string('function')->nullable();
             $table->string('origin_region')->nullable();
+            $table->string('origin_province')->nullable();
             $table->string('image_path')->nullable();
             $table->enum('status', [
                 'PENDING',
