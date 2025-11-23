@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Artifact;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class ArtifactTag extends Model
 {
@@ -21,7 +24,7 @@ class ArtifactTag extends Model
 
     public function artifact()
     {
-        return $this->belongsTo(Artifact::class);
+        return $this->belongsTo( Artifact::class);
     }
 
     public function tag()

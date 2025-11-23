@@ -16,12 +16,16 @@
 
         {{-- TOMBOL KANAN DESKTOP --}}
         <div class="navbar-right desktop-only">
-            <button class="btn-nav btn-nav-login">Login</button>
-            <button class="btn-nav btn-nav-signup">Sign Up</button>
+            <a href="{{ route('login') }}" class="btn-nav btn-nav-login">
+    Login
+</a>
+            <button class="btn-nav btn-nav-signup" type="button">
+                Sign Up
+            </button>
         </div>
 
         {{-- HAMBURGER MOBILE --}}
-        <button class="hamburger mobile-only" id="hamburgerBtn">
+        <button class="hamburger mobile-only" id="hamburgerBtn" type="button" aria-label="Buka menu navigasi">
             ☰
         </button>
     </div>
@@ -30,10 +34,12 @@
 {{-- MOBILE DRAWER MENU --}}
 <div class="mobile-menu-backdrop" id="mobileBackdrop"></div>
 
-<aside class="mobile-menu" id="mobileMenu">
+<aside class="mobile-menu" id="mobileMenu" aria-label="Menu navigasi seluler">
     <div class="mobile-menu-header">
         <span class="mobile-menu-title">Menu</span>
-        <button class="mobile-menu-close" id="mobileCloseBtn">✕</button>
+        <button class="mobile-menu-close" id="mobileCloseBtn" type="button" aria-label="Tutup menu navigasi">
+            ✕
+        </button>
     </div>
 
     <nav class="mobile-menu-links">
@@ -44,7 +50,11 @@
     </nav>
 
     <div class="mobile-menu-actions">
-        <button class="btn-nav btn-nav-login">Login</button>
-        <button class="btn-nav btn-nav-signup">Sign Up</button>
+        <button class="btn-nav btn-nav-login" type="button">
+            Login
+        </button>
+        <button class="btn-nav btn-nav-signup" type="button">
+            Sign Up
+        </button>
     </div>
 </aside>
