@@ -1,4 +1,4 @@
-<header class="navbar">
+<header class="site-navbar">
     <div class="navbar-container">
         <div class="navbar-left">
             <a href="{{ url('/') }}" class="navbar-logo">
