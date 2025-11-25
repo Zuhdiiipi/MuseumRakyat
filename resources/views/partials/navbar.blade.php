@@ -39,13 +39,8 @@
             @endauth
         </div>
 
-<<<<<<< HEAD
-        {{-- HAMBURGER --}}
-        <button class="hamburger mobile-only" id="hamburgerBtn">
-=======
         {{-- HAMBURGER MOBILE --}}
         <button class="hamburger mobile-only" id="hamburgerBtn" type="button" aria-label="Buka menu navigasi">
->>>>>>> 6fd801cfd01d5a7392e1020adabdcdf02c33f3d5
             ☰
         </button>
     </div>
