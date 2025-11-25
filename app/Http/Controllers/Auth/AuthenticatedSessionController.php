@@ -22,26 +22,29 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-   public function store(LoginRequest $request): RedirectResponse
+   // app/Http/Controllers/Auth/AuthenticatedSessionController.php
+
+public function store(LoginRequest $request)
 {
     $request->authenticate();
-
     $request->session()->regenerate();
 
     $user = $request->user();
+    $role = strtolower($user->role); // normalisasi
 
-    // ROLE-BASED REDIRECT
-    if ($user->role === 'ADMIN') {
+    if ($role === 'admin') {
         return redirect()->route('admin.index');
     }
 
-    if ($user->role === 'CURATOR') {
+    if ($role === 'curator') {
         return redirect()->route('curator.index');
     }
 
-    // default: USER / kontributor biasa
-    return redirect()->route('artifacts.index');
+    // user biasa / kontributor
+    return redirect()->route('dashboard');
 }
+
+
 
 
     /**

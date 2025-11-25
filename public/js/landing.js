@@ -138,71 +138,84 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-       /* ================= NAVBAR UNDERLINE SLIDER ================= */
-    const navbarMenu = document.querySelector('.navbar-menu.desktop-only');
+    /* ================= NAVBAR UNDERLINE SLIDER ================= */
+const navbarMenu = document.querySelector('.navbar-menu.desktop-only');
 
-    if (navbarMenu) {
-        const links = navbarMenu.querySelectorAll('.navbar-link');
+if (navbarMenu) {
+    const links = navbarMenu.querySelectorAll('.navbar-link');
 
-        // buat underline kalau belum ada
-        let underline = navbarMenu.querySelector('.navbar-underline');
-        if (!underline) {
-            underline = document.createElement('div');
-            underline.className = 'navbar-underline';
-            navbarMenu.appendChild(underline);
-        }
+    // buat underline jika belum ada
+    let underline = navbarMenu.querySelector('.navbar-underline');
+    if (!underline) {
+        underline = document.createElement('div');
+        underline.className = 'navbar-underline';
+        navbarMenu.appendChild(underline);
+    }
 
-        // link yang dianggap aktif (default: yang punya .active, kalau tidak ada pakai link pertama)
-        let activeLink = navbarMenu.querySelector('.navbar-link.active') || links[0];
+    // link aktif awal
+    let activeLink = navbarMenu.querySelector('.navbar-link.active') || links[0];
 
-        function animateUnderlineTo(target) {
-            if (!target) return;
+    function animateUnderlineTo(target, { animate = true } = {}) {
+        if (!target) return;
 
-            const rect = target.getBoundingClientRect();
-            const menuRect = navbarMenu.getBoundingClientRect();
-            const targetLeft = rect.left - menuRect.left;
-            const targetWidth = rect.width;
+        const rect = target.getBoundingClientRect();
+        const menuRect = navbarMenu.getBoundingClientRect();
+        const targetLeft = rect.left - menuRect.left;
+        const targetWidth = rect.width;
 
-            // posisikan underline di kiri link & reset width ke 0
+        if (!animate) {
+            // pindah tanpa animasi (dipakai saat klik & resize)
             underline.style.transition = 'none';
             underline.style.left = `${targetLeft}px`;
-            underline.style.width = `0px`;
-
-            // paksa reflow biar animasi width dari 0 → penuh
-            void underline.offsetWidth;
-
-            underline.style.transition = 'width 0.25s ease';
             underline.style.width = `${targetWidth}px`;
+            return;
         }
 
-        // posisi awal (saat page load)
-        animateUnderlineTo(activeLink);
+        // animasi dari kiri ke kanan: width 0 → penuh
+        underline.style.transition = 'none';
+        underline.style.left = `${targetLeft}px`;
+        underline.style.width = `0px`;
 
-        // saat hover: underline ikut ke link yang di-hover
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                animateUnderlineTo(link);
-            });
+        // paksa reflow
+        void underline.offsetWidth;
 
-            // saat klik: jadikan link ini sebagai .active dan underline menetap di sini
-            link.addEventListener('click', () => {
-                activeLink = link;
-                links.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                animateUnderlineTo(link);
-            });
-        });
-
-        // ketika mouse keluar dari area menu, underline kembali ke link aktif
-        navbarMenu.addEventListener('mouseleave', () => {
-            if (activeLink) animateUnderlineTo(activeLink);
-        });
-
-        // jika ukuran window berubah, perbarui posisi underline aktif
-        window.addEventListener('resize', () => {
-            if (activeLink) animateUnderlineTo(activeLink);
-        });
+        underline.style.transition = 'width 0.25s ease';
+        underline.style.width = `${targetWidth}px`;
     }
+
+    // posisi awal tanpa animasi
+    animateUnderlineTo(activeLink, { animate: false });
+
+    // HOVER → animasi
+    links.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            animateUnderlineTo(link, { animate: true });
+        });
+
+        // KLIK → jadikan aktif, TANPA animasi slide
+        link.addEventListener('click', () => {
+            activeLink = link;
+            links.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            animateUnderlineTo(link, { animate: false });
+        });
+    });
+
+    // Mouse keluar dari menu → kembali ke link aktif, pakai animasi
+    navbarMenu.addEventListener('mouseleave', () => {
+        if (activeLink) {
+            animateUnderlineTo(activeLink, { animate: true });
+        }
+    });
+
+    // Resize window → reposisi tanpa animasi
+    window.addEventListener('resize', () => {
+        if (activeLink) {
+            animateUnderlineTo(activeLink, { animate: false });
+        }
+    });
+}
+
 
 
 
