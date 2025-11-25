@@ -72,7 +72,7 @@ class ArtifactController extends Controller
             // 3. Simpan ke Database
             $artifact = Artifact::create([
                 // 'user_id' => Auth::id(),
-                'user_id' => Auth::id() ?? 1,
+                'user_id' => Auth::id() ?? 2,
                 'museum_id' => $request->museum_id,
                 'title' => $request->title,
                 'description' => $request->description,
@@ -136,11 +136,12 @@ class ArtifactController extends Controller
 
     // --- FUNGSI CEK STATUS (POLLING DARI JS) ---
     // Dipanggil via AJAX: /artifacts/check-status/{id}
+    // --- FUNGSI CEK STATUS (VERSI DEBUGGING) ---
     public function checkStatus($id)
     {
         $artifact = Artifact::findOrFail($id);
 
-        // Jika sudah sukses di DB, langsung return (Hemat API Call)
+        // 1. Cek Database dulu (Hemat API Call)
         if ($artifact->ai_status === 'SUCCESS' && $artifact->model_path) {
             return response()->json([
                 'data' => [
@@ -151,34 +152,46 @@ class ArtifactController extends Controller
             ]);
         }
 
-        // Jika tidak ada Task ID (Bukan kategori BENDA atau Gagal Awal)
+        // 2. Cek apakah punya Task ID
         if (!$artifact->tripo_task_id) {
-            return response()->json(['data' => ['status' => 'FAILED', 'error' => 'No Task ID']]);
+            return response()->json(['data' => ['status' => 'FAILED', 'error' => 'No Task ID found in database']]);
         }
 
-        // TEMBAK API TRIPO (Cek Status Realtime)
+        // 3. Tembak API Tripo
         try {
             $apiKey = config('services.tripo.api_key') ?? env('TRIPO_API_KEY');
 
-            $response = Http::withoutVerifying() // Penting untuk localhost
+            $response = Http::withoutVerifying()
                 ->withToken($apiKey)
-                ->timeout(10)
+                ->timeout(20) // Naikkan timeout jadi 20 detik jaga-jaga koneksi lambat
                 ->get("https://api.tripo3d.ai/v2/openapi/task/{$artifact->tripo_task_id}");
 
+            // Jika koneksi ke Tripo gagal (misal 401 Unauthorized atau 500 Server Error)
             if ($response->failed()) {
-                return response()->json(['data' => ['status' => 'RUNNING']]); // Asumsikan running kalau error network
+                return response()->json([
+                    'data' => [
+                        'status' => 'FAILED',
+                        'error'  => 'Tripo API Error: ' . $response->status() . ' - ' . $response->body()
+                    ]
+                ]);
             }
 
             $data = $response->json();
+
+            // Cek response body dari Tripo (Jaga-jaga strukturnya beda)
+            if (!isset($data['data']['status'])) {
+                return response()->json(['data' => ['status' => 'FAILED', 'error' => 'Invalid JSON response from Tripo']]);
+            }
+
             $tripoStatus = $data['data']['status']; // 'running', 'success', 'failed'
 
-            // Jika SUKSES, Simpan URL Permanen ke Database
+            // KASUS SUKSES
             if ($tripoStatus === 'success') {
-                $modelUrl = $data['data']['output']['model']; // Link .glb dari Tripo
+                $modelUrl = $data['data']['output']['model'];
 
                 $artifact->update([
                     'ai_status' => 'SUCCESS',
-                    'model_path' => $modelUrl // Simpan link AWS S3 Tripo
+                    'model_path' => $modelUrl
                 ]);
 
                 return response()->json([
@@ -190,19 +203,30 @@ class ArtifactController extends Controller
                 ]);
             }
 
-            // Jika GAGAL
+            // KASUS GAGAL DARI SANA
             elseif ($tripoStatus === 'failed') {
                 $artifact->update(['ai_status' => 'FAILED']);
-                return response()->json(['data' => ['status' => 'FAILED']]);
+                return response()->json([
+                    'data' => [
+                        'status' => 'FAILED',
+                        'error' => 'Tripo processing failed.'
+                    ]
+                ]);
             }
 
-            // Jika MASIH PROSES
+            // KASUS MASIH JALAN
             return response()->json(['data' => [
                 'status' => 'RUNNING',
                 'progress' => $data['data']['progress'] ?? 50
             ]]);
         } catch (\Exception $e) {
-            return response()->json(['data' => ['status' => 'RUNNING']]);
+            // --- BAGIAN INI YANG DIGANTI UNTUK MELIHAT ERROR ---
+            return response()->json([
+                'data' => [
+                    'status' => 'FAILED', // Paksa status FAILED agar muncul alert di layar
+                    'error'  => 'System Exception: ' . $e->getMessage() // Tampilkan pesan errornya
+                ]
+            ]);
         }
     }
 
@@ -238,7 +262,7 @@ class ArtifactController extends Controller
     {
         // Ambil data milik user yang sedang login (Auth::id())
         // Urutkan dari yang terbaru
-        $myArtifacts = Artifact::where('user_id', Auth::id() ?? 1) // Pastikan ID 1 jika pakai dummy
+        $myArtifacts = Artifact::where('user_id', Auth::id() ?? 2) // Pastikan ID 1 jika pakai dummy
             ->with('museum')
             ->latest()
             ->paginate(10);

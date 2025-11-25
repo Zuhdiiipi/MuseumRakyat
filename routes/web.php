@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArtifactController;
 use App\Http\Controllers\MuseumController;
@@ -21,8 +22,16 @@ Route::delete('/artifacts/{id}', [ArtifactController::class, 'destroy'])->name('
 Route::get('/my-archive', [ArtifactController::class, 'myArtifacts'])->name('artifacts.my_archive');
 
 // API AJAX untuk Cek Status Tripo & Proxy Model 3D
-Route::get('/artifacts/check-status/{id}', [ArtifactController::class, 'checkStatus']);
-Route::get('/artifacts/proxy', [ArtifactController::class, 'proxyModel']);
+// Route::get('/artifacts/check-status/{id}', [ArtifactController::class, 'checkStatus']);
+// Route::get('/artifacts/proxy', [ArtifactController::class, 'proxyModel']);
+
+// API AJAX untuk Cek Status Tripo & Proxy Model 3D
+// PENTING: Tambahkan ->name() agar bisa dipanggil di Blade
+Route::get('/artifacts/check-status/{id}', [ArtifactController::class, 'checkStatus'])
+    ->name('artifacts.check_status');
+
+Route::get('/artifacts/proxy', [ArtifactController::class, 'proxyModel'])
+    ->name('artifacts.proxy');
 
 // --- MUSEUMS (PETA GIS) ---
 Route::get('/museums', [MuseumController::class, 'index'])->name('museums.index'); // Halaman Peta
@@ -35,3 +44,14 @@ Route::get('/museums/{id}', [MuseumController::class, 'show'])->name('museums.sh
 Route::get('/dashboard/curator', [CuratorController::class, 'index'])->name('curator.index');
 Route::post('/curator/approve/{id}', [CuratorController::class, 'approve'])->name('curator.approve');
 Route::post('/curator/reject/{id}', [CuratorController::class, 'reject'])->name('curator.reject');
+
+// --- ADMIN DASHBOARD ---
+// Nanti tambahkan middleware 'auth' dan cek role ADMIN
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::post('/users/{id}/toggle', [AdminController::class, 'toggleUserStatus'])->name('users.toggle');
+
+    // Kita gunakan MuseumController untuk tambah museum (Reuse code)
+    Route::post('/museums', [MuseumController::class, 'store'])->name('museums.store');
+});
