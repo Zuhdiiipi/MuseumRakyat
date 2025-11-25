@@ -16,21 +16,25 @@ Route::get('/artifacts', [ArtifactController::class, 'index'])->name('artifacts.
 Route::middleware('auth')->group(function () {
 
     // ---------- KONTRIBUTOR (USER BIASA) ----------
-    // Upload & manajemen koleksi milik sendiri
-    Route::get('/artifacts/create', [ArtifactController::class, 'create'])->name('artifacts.create');
-    Route::post('/artifacts', [ArtifactController::class, 'store'])->name('artifacts.store');
-    Route::delete('/artifacts/{id}', [ArtifactController::class, 'destroy'])->name('artifacts.destroy');
+    Route::middleware('role:user')->group(function () {
+        // Upload & manajemen koleksi milik sendiri
+        Route::get('/artifacts/create', [ArtifactController::class, 'create'])->name('artifacts.create');
+        Route::post('/artifacts', [ArtifactController::class, 'store'])->name('artifacts.store');
+        Route::delete('/artifacts/{id}', [ArtifactController::class, 'destroy'])->name('artifacts.destroy');
 
-    // Arsip Saya (dashboard kontributor)
-    Route::get('/my-archive', [ArtifactController::class, 'myArtifacts'])->name('artifacts.my_archive');
+        // Arsip Saya (dashboard kontributor)
+        Route::get('/my-archive', [ArtifactController::class, 'myArtifacts'])->name('artifacts.my_archive');
+    });
 
-    // Dashboard bawaan Breeze → kita arahkan ke galeri koleksi
+    // Dashboard bawaan Breeze → kita arahkan ke galeri koleksi (boleh semua role yang login)
     Route::get('/dashboard', fn () => redirect()->route('artifacts.index'))->name('dashboard');
 
-    // ---------- KURATOR (NANTI AKAN DILINDUNGI ROLE) ----------
-    Route::get('/dashboard/curator', [CuratorController::class, 'index'])->name('curator.index');
-    Route::post('/curator/approve/{id}', [CuratorController::class, 'approve'])->name('curator.approve');
-    Route::post('/curator/reject/{id}', [CuratorController::class, 'reject'])->name('curator.reject');
+    // ---------- KURATOR ----------
+    Route::middleware('role:curator')->group(function () {
+        Route::get('/dashboard/curator', [CuratorController::class, 'index'])->name('curator.index');
+        Route::post('/curator/approve/{id}', [CuratorController::class, 'approve'])->name('curator.approve');
+        Route::post('/curator/reject/{id}', [CuratorController::class, 'reject'])->name('curator.reject');
+    });
 });
 
 // ================== DETAIL ARTIFAK (SETELAH CREATE, ID HANYA ANGKA) ==================
@@ -44,10 +48,9 @@ Route::get('/api/museums-json', [MuseumController::class, 'mapData']);
 Route::get('/museums/{id}', [MuseumController::class, 'show'])->name('museums.show');
 
 // ================== ADMIN DASHBOARD ==================
-// Minimal dilindungi auth dulu (nanti bisa tambah middleware role:admin)
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware('auth')
+    ->middleware(['auth', 'role:admin'])   // <--- di sini pakai RoleMiddleware
     ->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('/users', [AdminController::class, 'users'])->name('users');
