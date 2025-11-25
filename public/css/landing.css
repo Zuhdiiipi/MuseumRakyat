@@ -130,6 +130,48 @@ a {
 .hero {
     position: relative;
     min-height: 100vh;
+    padding: 6rem 1.5rem 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top left, rgba(244, 194, 106, 0.14), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(94, 42, 10, 0.5), #171717);
+}
+
+/* Glow background existing */
+.hero::before,
+.hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(68px);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.hero::before {
+    width: 260px;
+    height: 260px;
+    background: rgba(244, 194, 106, 0.35);
+    top: -80px;
+    right: 12%;
+}
+
+.hero::after {
+    width: 320px;
+    height: 320px;
+    background: rgba(20, 9, 3, 0.95);
+    bottom: -120px;
+    left: -80px;
+}
+
+/* ================= HERO ================= */
+
+.hero {
+    position: relative;
+    min-height: 100vh;
     padding: 6rem 1.5rem 3.5rem; /* space for fixed navbar */
     display: flex;
     align-items: center;
@@ -166,6 +208,7 @@ a {
     left: -80px;
 }
 
+/* container hero */
 .hero-container {
     position: relative;
     max-width: 960px;
@@ -175,8 +218,66 @@ a {
     align-items: center;
     justify-content: space-between;
     gap: 2.5rem;
-    z-index: 1;
+    z-index: 2; /* di atas awan */
 }
+
+/* ================= AWAN DEKORATIF ================= */
+
+.hero-cloud {
+    position: absolute;
+    background-image: url('/images/ornament/awan-museum-atas.png'); /* sesuaikan path */
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    opacity: 0.18;
+    mix-blend-mode: screen;
+    filter: saturate(1.05) blur(0.6px);
+}
+
+/* Awan kiri – digeser lebih masuk */
+.hero-cloud-left {
+    top: 40px;      /* sebelumnya -90px */
+    left: 40px;      /* sebelumnya -120px */
+    width: 520px;
+    height: 330px;
+    animation: cloudLeftDrift 26s ease-in-out infinite alternate;
+}
+
+/* Awan kanan – digeser lebih masuk */
+.hero-cloud-right {
+    bottom: -60px;   /* sebelumnya -140px */
+    right: 40px;     /* sebelumnya -150px */
+    width: 620px;
+    height: 400px;
+    transform: scaleX(-1);
+    animation: cloudRightDrift 30s ease-in-out infinite alternate;
+}
+.hero-cloud {
+    position: absolute;
+    background-image: url('/images/ornament/awan-museum-atas.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    opacity: 0.20;
+    mix-blend-mode: screen;
+    filter: saturate(1.05) blur(0.4px) drop-shadow(0 0 30px rgba(244, 194, 106, 0.32));
+}
+
+
+/* Animasi mengambang */
+@keyframes cloudLeftDrift {
+    0%   { transform: translateX(0); }
+    50%  { transform: translateX(30px); }
+    100% { transform: translateX(-18px); }
+}
+
+@keyframes cloudRightDrift {
+    0%   { transform: scaleX(-1) translateX(0); }
+    50%  { transform: scaleX(-1) translateX(-30px); }
+    100% { transform: scaleX(-1) translateX(18px); }
+}
+
+/* ================= KONTEN HERO ================= */
 
 .hero-content-wrapper {
     flex: 1;
@@ -272,7 +373,6 @@ a {
 }
 
 /* Meta kecil di bawah tombol */
-
 .hero-meta {
     margin-top: 2.1rem;
     display: flex;
@@ -305,7 +405,6 @@ a {
 }
 
 /* HERO ARROWS */
-
 .hero-arrow {
     border: none;
     background: transparent;
@@ -322,50 +421,166 @@ a {
     color: #ffffff;
 }
 
-.hero-arrow-left {
-    margin-right: 0.4rem;
+
+/* ================= HERO CONTENT ================= */
+
+.hero-content-wrapper {
+    flex: 1;
+    text-align: center;
 }
 
-.hero-arrow-right {
-    margin-left: 0.4rem;
+.hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(244, 194, 106, 0.4);
+    color: rgba(245, 245, 245, 0.86);
+    margin-bottom: 0.9rem;
 }
 
-/* RESPONSIVE HERO (lanjutan dari yang sudah ada) */
-@media (max-width: 768px) {
-    .hero {
-        padding: 5.5rem 1.25rem 3rem;
-    }
+.hero-kicker::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--gold);
+}
 
-    .hero-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 2rem;
-    }
+.hero-title {
+    font-size: clamp(2.6rem, 4.3vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+}
 
-    .hero-arrow {
-        display: none;
-    }
+.hero-accent {
+    width: 190px;
+    height: 4px;
+    border-radius: 999px;
+    margin: 0.1rem auto 1.9rem;
+    background: linear-gradient(90deg, var(--gold), var(--brown-soft));
+}
 
-    .hero-actions {
-        flex-direction: column;
-        align-items: center;
-    }
+.hero-subtitle {
+    max-width: 720px;
+    margin: 0 auto 2.3rem;
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+}
 
-    .btn-hero {
-        width: 100%;
-        max-width: 260px;
-    }
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: 1.1rem;
+}
 
-    .hero-meta {
-        gap: 0.9rem;
-    }
+.btn-hero {
+    min-width: 190px;
+    padding: 0.9rem 1.7rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease,
+        color 0.15s ease;
+    white-space: nowrap;
+}
 
-    .hero-meta-item {
-        min-width: 0;
-        width: 100%;
-        max-width: 260px;
+.btn-hero-primary {
+    background: linear-gradient(135deg, var(--brown), var(--brown-soft));
+    color: #f8f3ea;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.55);
+}
+
+.btn-hero-secondary {
+    background: rgba(250, 246, 238, 0.96);
+    color: #262626;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.btn-hero:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.6);
+}
+
+/* Meta */
+.hero-meta {
+    margin-top: 2.1rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+}
+
+.hero-meta-item {
+    min-width: 150px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(244, 194, 106, 0.4);
+    background: rgba(5, 5, 5, 0.65);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.hero-meta-number {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold);
+}
+
+.hero-meta-label {
+    font-size: 0.78rem;
+    color: rgba(245, 245, 245, 0.78);
+}
+
+/* Arrows */
+.hero-arrow {
+    border: none;
+    background: transparent;
+    color: rgba(234, 234, 234, 0.76);
+    font-size: 2.1rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.hero-arrow:hover {
+    opacity: 1;
+    transform: scale(1.06);
+    color: #ffffff;
+}
+
+/* Responsive cloud size */
+@media (max-width: 780px) {
+    .hero-cloud-left {
+        width: 360px;
+        height: 240px;
+        top: -60px;
+        left: -110px;
+    }
+    .hero-cloud-right {
+        width: 420px;
+        height: 280px;
+        bottom: -90px;
+        right: -120px;
     }
 }
+
+
 
 /* ================= DRAWER NAVBAR (MOBILE) ================= */
 

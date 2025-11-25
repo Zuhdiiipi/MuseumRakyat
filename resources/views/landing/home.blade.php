@@ -6,6 +6,9 @@
 
     {{-- SECTION HERO --}}
 <section class="hero reveal" data-reveal>
+     {{-- Awan dekoratif --}}
+    <div class="hero-cloud hero-cloud-left"></div>
+    <div class="hero-cloud hero-cloud-right"></div>
     <div class="hero-container">
 
         <button class="hero-arrow hero-arrow-left" aria-label="Sebelumnya">
