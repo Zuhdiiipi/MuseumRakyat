@@ -15,64 +15,66 @@
 
         <div class="navbar-right desktop-only">
 
-            {{-- BELUM LOGIN --}}
+            {{-- JIKA BELUM LOGIN (Tamu) --}}
             @guest
-                <a href="{{ route('login') }}" class="btn-nav btn-nav-login" style="text-decoration: none;">
-                    Login
-                </a>
-                <a href="{{ route('register') }}" class="btn-nav btn-nav-signup" style="text-decoration: none;">
-                    Sign Up
-                </a>
+                <a href="{{ route('login') }}" class="btn-nav btn-nav-login text-decoration-none">Login</a>
+                <a href="{{ route('register') }}" class="btn-nav btn-nav-signup text-decoration-none">Sign Up</a>
             @endguest
 
-            {{-- SUDAH LOGIN --}}
+            {{-- JIKA SUDAH LOGIN (Member) --}}
             @auth
-
-                {{-- Tombol Upload --}}
-                <a href="{{ route('artifacts.create') }}"
-                   class="btn-nav btn-nav-login d-flex align-items-center gap-2"
-                   style="text-decoration: none;">
+                {{-- 1. Tombol Upload --}}
+                <a href="{{ route('artifacts.create') }}" class="btn-nav btn-nav-login d-flex align-items-center gap-2 text-decoration-none">
                     <span>+ Upload</span>
                 </a>
 
-                {{-- Dropdown User --}}
+                {{-- 2. Dropdown User --}}
                 <div class="dropdown ms-2">
-                    <button class="btn-nav btn-nav-signup dropdown-toggle d-flex align-items-center gap-2"
-                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-
+                    <button class="btn-nav btn-nav-signup dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        
                         {{-- Foto Profil --}}
                         @if(Auth::user()->avatar)
-                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
-                                 class="rounded-circle"
-                                 style="width: 24px; height: 24px; object-fit: cover;">
+                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}" class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover; border: 1px solid #fff;">
                         @else
                             <span class="bi bi-person-circle"></span>
                         @endif
-
-                        {{ Str::limit(Auth::user()->name, 12) }}
+                        
+                        {{-- Nama User --}}
+                        {{ Str::limit(Auth::user()->name, 10) }}
                     </button>
-
+                    
+                    {{-- ISI MENU DROPDOWN --}}
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow-lg mt-2 border-secondary">
+                        <li><h6 class="dropdown-header text-warning">Halo, {{ Auth::user()->name }}!</h6></li>
+                        
+                        {{-- Menu: Edit Profil --}}
+                        <li>
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                👤 Edit Profil
+                            </a>
+                        </li>
 
-                        {{-- Dashboard / Arsip sesuai Role --}}
+                        {{-- Menu: Dashboard / Arsip --}}
                         <li>
                             @if(Auth::user()->role === 'ADMIN' || Auth::user()->role === 'CURATOR')
-                                
+                                <a class="dropdown-item" href="{{ route('curator.index') }}">
+                                    👮 Dashboard Kurator
+                                </a>
                             @else
                                 <a class="dropdown-item" href="{{ route('artifacts.my_archive') }}">
-                                    Arsip Saya
+                                    📂 Arsip Saya
                                 </a>
                             @endif
                         </li>
 
                         <li><hr class="dropdown-divider border-secondary"></li>
-
-                        {{-- Tombol Logout --}}
+                        
+                        {{-- Menu: Logout --}}
                         <li>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
                                 <button type="submit" class="dropdown-item text-danger">
-                                    Logout
+                                    🚪 Logout
                                 </button>
                             </form>
                         </li>
@@ -87,7 +89,7 @@
     </div>
 </header>
 
-{{-- MENU MOBILE --}}
+{{-- MENU MOBILE (SAMA PENTINGNYA UNTUK HP) --}}
 <div class="mobile-menu-backdrop" id="mobileBackdrop"></div>
 <aside class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
@@ -102,35 +104,26 @@
 
         <hr class="border-secondary my-2">
 
-        {{-- BELUM LOGIN --}}
         @guest
             <a href="{{ route('login') }}" class="mobile-link">Login</a>
             <a href="{{ route('register') }}" class="mobile-link">Sign Up</a>
         @endguest
 
-        {{-- SUDAH LOGIN --}}
         @auth
             <span class="text-muted small px-2">Akun: {{ Auth::user()->name }}</span>
-
-            <a href="{{ route('artifacts.create') }}" class="mobile-link text-warning">
-                + Upload Koleksi
-            </a>
+            
+            <a href="{{ route('profile.edit') }}" class="mobile-link">👤 Edit Profil</a>
+            <a href="{{ route('artifacts.create') }}" class="mobile-link text-warning">+ Upload Koleksi</a>
 
             @if(Auth::user()->role === 'ADMIN' || Auth::user()->role === 'CURATOR')
-                <a href="{{ route('curator.index') }}" class="mobile-link">
-                    Dashboard Kurator
-                </a>
+                <a href="{{ route('curator.index') }}" class="mobile-link">👮 Dashboard Kurator</a>
             @else
-                <a href="{{ route('artifacts.my_archive') }}" class="mobile-link">
-                    Arsip Saya
-                </a>
+                <a href="{{ route('artifacts.my_archive') }}" class="mobile-link">📂 Arsip Saya</a>
             @endif
 
             <form action="{{ route('logout') }}" method="POST" class="mt-2 px-2">
                 @csrf
-                <button class="btn btn-sm btn-outline-danger w-100">
-                    Logout
-                </button>
+                <button class="btn btn-sm btn-outline-danger w-100">Logout</button>
             </form>
         @endauth
     </nav>
