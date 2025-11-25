@@ -9,16 +9,23 @@
 
     {{-- CSS Landing --}}
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 </head>
 <body>
 
+    {{-- NAVBAR --}}
     @include('partials.navbar')
 
+    {{-- CONTENT WRAPPER --}}
     <main>
         @yield('content')
     </main>
-    @include('partials.footer')  
+
+     @include('partials.footer')
     {{-- JS Landing --}}
     <script src="{{ asset('js/landing.js') }}"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 </body>
 </html>
