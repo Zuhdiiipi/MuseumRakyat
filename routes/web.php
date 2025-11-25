@@ -11,7 +11,7 @@ use App\Http\Controllers\ProfileController;
 
 // ================== HALAMAN UTAMA (LANDING / HOME) ==================
 Route::get('/', function () {
-    return redirect()->route('artifacts.index');
+    return view('landing.home');
 })->name('home');
 
 // ================== ARTIFACTS (PUBLIK) ==================
