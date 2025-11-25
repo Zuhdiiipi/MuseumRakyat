@@ -1,47 +1,71 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="register-wrapper">
+        <h2 class="register-title">Masuk ke Museum Rakyat</h2>
+        <p class="register-subtitle">
+            Akses akun kontributor dan kelola koleksi budaya yang sudah kamu unggah.
+        </p>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+        <!-- Status / pesan sukses -->
+        <x-auth-session-status class="mb-4" :status="session('status')" />
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <form method="POST" action="{{ route('login') }}" class="register-form">
+            @csrf
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            {{-- Email --}}
+            <div class="input-group">
+                <label for="email" class="input-label">Email</label>
+                <input id="email"
+                       type="email"
+                       name="email"
+                       value="{{ old('email') }}"
+                       required
+                       autofocus
+                       autocomplete="username"
+                       placeholder="Alamat email yang terdaftar"
+                       class="input-field">
+                <x-input-error :messages="$errors->get('email')" class="input-error" />
+            </div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+            {{-- Password --}}
+            <div class="input-group">
+                <label for="password" class="input-label">Password</label>
+                <input id="password"
+                       type="password"
+                       name="password"
+                       required
+                       autocomplete="current-password"
+                       placeholder="Masukkan password"
+                       class="input-field">
+                <x-input-error :messages="$errors->get('password')" class="input-error" />
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            {{-- Remember Me + Lupa password --}}
+            <div class="input-group input-group-inline">
+                <label class="remember-me-label">
+                    <input id="remember_me"
+                           type="checkbox"
+                           name="remember"
+                           class="remember-me-checkbox">
+                    <span>Ingat saya</span>
+                </label>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" class="forgot-password-link">
+                        Lupa password?
+                    </a>
+                @endif
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+            <button type="submit" class="btn-register">
+                Masuk
+            </button>
+
+            <p class="login-hint">
+                Belum punya akun?
+                <a href="{{ route('register') }}" class="login-link">
+                    Daftar sebagai kontributor
                 </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
+            </p>
+        </form>
+    </div>
 </x-guest-layout>

@@ -1,4 +1,4 @@
-<header class="navbar">
+<header class="site-navbar">
     <div class="navbar-container">
         <div class="navbar-left">
             <a href="{{ url('/') }}" class="navbar-logo">
@@ -16,12 +16,26 @@
 
         {{-- TOMBOL KANAN DESKTOP --}}
         <div class="navbar-right desktop-only">
-            <a href="{{ route('login') }}" class="btn-nav btn-nav-login">
-    Login
-</a>
-            <button class="btn-nav btn-nav-signup" type="button">
-                Sign Up
-            </button>
+            @auth
+                {{-- Kalau user sudah login --}}
+                <a href="{{ route('dashboard') }}" class="btn-nav btn-nav-login">
+                    Dashboard
+                </a>
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                    @csrf
+                    <button type="submit" class="btn-nav btn-nav-signup">
+                        Logout
+                    </button>
+                </form>
+            @else
+                {{-- Kalau user belum login --}}
+                <a href="{{ route('login') }}" class="btn-nav btn-nav-login">
+                    Login
+                </a>
+                <a href="{{ route('register') }}" class="btn-nav btn-nav-signup">
+                    Sign Up
+                </a>
+            @endauth
         </div>
 
         {{-- HAMBURGER MOBILE --}}
@@ -50,11 +64,23 @@
     </nav>
 
     <div class="mobile-menu-actions">
-        <button class="btn-nav btn-nav-login" type="button">
-            Login
-        </button>
-        <button class="btn-nav btn-nav-signup" type="button">
-            Sign Up
-        </button>
+        @auth
+            <a href="{{ route('dashboard') }}" class="btn-nav btn-nav-login">
+                Dashboard
+            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="btn-nav btn-nav-signup" type="submit">
+                    Logout
+                </button>
+            </form>
+        @else
+            <a href="{{ route('login') }}" class="btn-nav btn-nav-login">
+                Login
+            </a>
+            <a href="{{ route('register') }}" class="btn-nav btn-nav-signup">
+                Sign Up
+            </a>
+        @endauth
     </div>
 </aside>

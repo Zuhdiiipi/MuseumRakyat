@@ -232,15 +232,11 @@ document.addEventListener('DOMContentLoaded', function () {
     <section id="tim" class="team-section reveal" data-reveal>
     <div class="team-container">
         <div class="team-header">
-            <h2 class="team-title">Tim di Balik MuseumRakyat</h2>
-            <p class="team-subtitle">
-                Orang-orang hebat yang berkolaborasi untuk menghadirkan arsip budaya Mandar
-                dan Sulawesi Barat ke ruang digital.
-            </p>
+            <h2 class="team-title">Sastra Code</h2>
 
             <div class="team-filters" aria-label="Filter berdasarkan fokus tim">
                 <button class="team-filter-chip active" data-team-filter="all">Semua</button>
-                <button class="team-filter-chip" data-team-filter="pimpinan">Pimpinan</button>
+                <button class="team-filter-chip" data-team-filter="pimpinan">Ketua</button>
                 <button class="team-filter-chip" data-team-filter="administrasi">Administrasi</button>
                 <button class="team-filter-chip" data-team-filter="konten">Konten</button>
                 <button class="team-filter-chip" data-team-filter="backend">Backend</button>
@@ -271,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <article class="team-card" data-team-role="administrasi">
                 <div class="team-card-inner">
                     <div class="team-avatar-wrapper">
-                        <img src="" alt="Nur Avika">
+                        <img src="images/avika.jpg" alt="Nur Avika">
                         <span class="team-role-chip">Administrasi & Dokumentasi</span>
                     </div>
                     <div class="team-body">
@@ -327,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <article class="team-card" data-team-role="frontend">
                 <div class="team-card-inner">
                     <div class="team-avatar-wrapper">
-                        <img src="images/Nopal.jpg" alt="Muhammad Naufal N">
+                        <img src="images/nopal1.png" alt="Muhammad Naufal N">
                         <span class="team-role-chip">Frontend Developer</span>
                     </div>
                     <div class="team-body">
