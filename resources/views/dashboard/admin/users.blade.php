@@ -43,8 +43,9 @@
             </tbody>
         </table>
     </div>
-    <div class="card-footer bg-dark border-secondary">
-        {{ $users->links() }}
-    </div>
+   <div class="card-footer bg-dark border-secondary d-flex justify-content-center">
+    {{ $users->links('pagination::bootstrap-5') }}
+</div>
+
 </div>
 @endsection
