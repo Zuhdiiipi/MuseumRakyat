@@ -7,20 +7,22 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle($request, Closure $next, ...$roles)
-    {
-        // Kalau belum login
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
+   // app/Http/Middleware/RoleMiddleware.php
 
-        $userRole = Auth::user()->role;
-
-        // Cek apakah role user termasuk daftar role yg diizinkan
-        if (! in_array($userRole, $roles)) {
-            abort(403, 'Akses ditolak');
-        }
-
-        return $next($request);
+public function handle($request, Closure $next, ...$roles)
+{
+    if (!Auth::check()) {
+        return redirect()->route('login');
     }
+
+    $userRole     = strtolower(Auth::user()->role);
+    $allowedRoles = array_map('strtolower', $roles);
+
+    if (! in_array($userRole, $allowedRoles)) {
+        abort(403, 'Akses ditolak');
+    }
+
+    return $next($request);
+}
+
 }
