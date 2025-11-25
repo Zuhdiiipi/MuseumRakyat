@@ -7,11 +7,12 @@
 
             {{-- MENU DESKTOP --}}
             <nav class="navbar-menu desktop-only">
-                <a href="{{ url('/') }}" class="navbar-link active">Home</a>
-                <a href="#koleksi" class="navbar-link">Jelajahi Koleksi</a>
-                <a href="#peta" class="navbar-link">Peta Budaya</a>
-                <a href="#tentang" class="navbar-link">Tentang Kami</a>
-            </nav>
+    <a href="{{ url('/') }}" class="navbar-link active" data-section="home">Home</a>
+    <a href="#koleksi" class="navbar-link" data-section="koleksi">Jelajahi Koleksi</a>
+    <a href="#peta" class="navbar-link" data-section="peta">Peta Budaya</a>
+    <a href="#tentang" class="navbar-link" data-section="tentang">Tentang Kami</a>
+</nav>
+
         </div>
 
         {{-- TOMBOL KANAN DESKTOP --}}
@@ -57,11 +58,13 @@
     </div>
 
     <nav class="mobile-menu-links">
-        <a href="{{ url('/') }}" class="mobile-link">Home</a>
-        <a href="#koleksi" class="mobile-link">Jelajahi Koleksi</a>
-        <a href="#peta" class="mobile-link">Peta Budaya</a>
-        <a href="#tentang" class="mobile-link">Tentang Kami</a>
-    </nav>
+    <a href="{{ url('/') }}" class="mobile-link" data-section="home">Home</a>
+    <a href="#koleksi" class="mobile-link" data-section="koleksi">Jelajahi Koleksi</a>
+    <a href="#peta" class="mobile-link" data-section="peta">Peta Budaya</a>
+    <a href="#tentang" class="mobile-link" data-section="tentang">Tentang Kami</a>
+    
+</nav>
+
 
     <div class="mobile-menu-actions">
         @auth
