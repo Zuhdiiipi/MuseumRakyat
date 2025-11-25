@@ -1,37 +1,60 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArtifactController;
 use App\Http\Controllers\MuseumController;
 use App\Http\Controllers\CuratorController;
 
-// Redirect halaman awal ke daftar koleksi
+// ================== HALAMAN UTAMA (LANDING / HOME) ==================
 Route::get('/', [ArtifactController::class, 'index'])->name('home');
 
-Route::get('/tes', function () {
-    return view('landing.home');
+// ================== ARTIFACTS (PUBLIK) ==================
+Route::get('/artifacts', [ArtifactController::class, 'index'])->name('artifacts.index');
+
+// ================== ROUTE YANG WAJIB LOGIN (AUTH) ==================
+Route::middleware('auth')->group(function () {
+
+    // ---------- KONTRIBUTOR (USER BIASA) ----------
+    // Upload & manajemen koleksi milik sendiri
+    Route::get('/artifacts/create', [ArtifactController::class, 'create'])->name('artifacts.create');
+    Route::post('/artifacts', [ArtifactController::class, 'store'])->name('artifacts.store');
+    Route::delete('/artifacts/{id}', [ArtifactController::class, 'destroy'])->name('artifacts.destroy');
+
+    // Arsip Saya (dashboard kontributor)
+    Route::get('/my-archive', [ArtifactController::class, 'myArtifacts'])->name('artifacts.my_archive');
+
+    // Dashboard bawaan Breeze → kita arahkan ke galeri koleksi
+    Route::get('/dashboard', fn () => redirect()->route('artifacts.index'))->name('dashboard');
+
+    // ---------- KURATOR (NANTI AKAN DILINDUNGI ROLE) ----------
+    Route::get('/dashboard/curator', [CuratorController::class, 'index'])->name('curator.index');
+    Route::post('/curator/approve/{id}', [CuratorController::class, 'approve'])->name('curator.approve');
+    Route::post('/curator/reject/{id}', [CuratorController::class, 'reject'])->name('curator.reject');
 });
 
-// --- ARTIFACTS (KOLEKSI & AI) ---
-Route::get('/artifacts', [ArtifactController::class, 'index'])->name('artifacts.index');
-Route::get('/artifacts/create', [ArtifactController::class, 'create'])->name('artifacts.create'); // Form Upload
-Route::post('/artifacts', [ArtifactController::class, 'store'])->name('artifacts.store'); // Proses Simpan
-Route::get('/artifacts/{id}', [ArtifactController::class, 'show'])->name('artifacts.show'); // Detail
-Route::delete('/artifacts/{id}', [ArtifactController::class, 'destroy'])->name('artifacts.destroy');
-Route::get('/my-archive', [ArtifactController::class, 'myArtifacts'])->name('artifacts.my_archive');
+// ================== DETAIL ARTIFAK (SETELAH CREATE, ID HANYA ANGKA) ==================
+Route::get('/artifacts/{id}', [ArtifactController::class, 'show'])
+    ->whereNumber('id')
+    ->name('artifacts.show');
 
-// API AJAX untuk Cek Status Tripo & Proxy Model 3D
-Route::get('/artifacts/check-status/{id}', [ArtifactController::class, 'checkStatus']);
-Route::get('/artifacts/proxy', [ArtifactController::class, 'proxyModel']);
+// ================== MUSEUMS (PUBLIK) ==================
+Route::get('/museums', [MuseumController::class, 'index'])->name('museums.index');
+Route::get('/api/museums-json', [MuseumController::class, 'mapData']);
+Route::get('/museums/{id}', [MuseumController::class, 'show'])->name('museums.show');
 
-// --- MUSEUMS (PETA GIS) ---
-Route::get('/museums', [MuseumController::class, 'index'])->name('museums.index'); // Halaman Peta
-Route::get('/api/museums-json', [MuseumController::class, 'mapData']); // JSON Data Peta
-Route::get('/museums/{id}', [MuseumController::class, 'show'])->name('museums.show'); // Detail Museum
-// Route::post('/museums', [MuseumController::class, 'store'])->name('museums.store'); // (Matikan dulu kalau belum perlu)
+// ================== ADMIN DASHBOARD ==================
+// Minimal dilindungi auth dulu (nanti bisa tambah middleware role:admin)
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::get('/users', [AdminController::class, 'users'])->name('users');
+        Route::post('/users/{id}/toggle', [AdminController::class, 'toggleUserStatus'])->name('users.toggle');
 
-// --- CURATOR (DASHBOARD) ---
-// Harusnya dilindungi middleware admin, tapi kita buka dulu untuk testing
-Route::get('/dashboard/curator', [CuratorController::class, 'index'])->name('curator.index');
-Route::post('/curator/approve/{id}', [CuratorController::class, 'approve'])->name('curator.approve');
-Route::post('/curator/reject/{id}', [CuratorController::class, 'reject'])->name('curator.reject');
+        // Tambah museum via MuseumController (reuse logic)
+        Route::post('/museums', [MuseumController::class, 'store'])->name('museums.store');
+    });
+
+require __DIR__.'/auth.php';

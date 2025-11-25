@@ -69,7 +69,7 @@
 </head>
 <body>
 
-    @include('partials.navbar')
+    @include('partials.navbar-auth')
 
     <main>
         <div class="container">

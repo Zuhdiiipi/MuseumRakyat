@@ -16,21 +16,30 @@ class ArtifactController extends Controller
 {
     // --- HALAMAN UTAMA ---
 
-    public function index(Request $request)
-    {
-        $query = Artifact::verified()->with(['user', 'museum']);
-
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
-
-        $artifacts = $query->latest()->paginate(12);
-        $artifacts->appends($request->all());
-        return view('artifacts.index', compact('artifacts'));
+   public function index(Request $request)
+{
+    // Jika ini route 'home' (/) dan user BELUM login → tampilkan landing page
+    if (!Auth::check() && $request->routeIs('home')) {
+        return view('landing.home');
     }
+
+    // Kalau sudah login ATAU route /artifacts → tampilkan galeri koleksi
+    $query = Artifact::verified()->with(['user', 'museum']);
+
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
+    }
+
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
+    }
+
+    $artifacts = $query->latest()->paginate(12);
+    $artifacts->appends($request->all());
+
+    return view('artifacts.index', compact('artifacts'));
+}
+
 
     public function create()
     {
@@ -71,8 +80,8 @@ class ArtifactController extends Controller
 
             // 3. Simpan ke Database
             $artifact = Artifact::create([
-                // 'user_id' => Auth::id(),
-                'user_id' => Auth::id() ?? 1,
+                'user_id' => Auth::id(),
+                // 'user_id' => Auth::id() ?? 1,
                 'museum_id' => $request->museum_id,
                 'title' => $request->title,
                 'description' => $request->description,
@@ -238,7 +247,7 @@ class ArtifactController extends Controller
     {
         // Ambil data milik user yang sedang login (Auth::id())
         // Urutkan dari yang terbaru
-        $myArtifacts = Artifact::where('user_id', Auth::id() ?? 1) // Pastikan ID 1 jika pakai dummy
+        $myArtifacts = Artifact::where('user_id', Auth::id()) // Pastikan ID 1 jika pakai dummy
             ->with('museum')
             ->latest()
             ->paginate(10);

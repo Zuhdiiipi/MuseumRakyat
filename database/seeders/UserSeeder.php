@@ -20,10 +20,17 @@ class UserSeeder extends Seeder
 
         // Admin/Kurator (ID: 2)
         User::create([
-            'name' => 'Pak Kurator',
+            'name' => 'Admin',
             'email' => 'admin@museum.id',
             'password' => Hash::make('password'),
-            'role' => 'ADMIN',
+            'role' => 'ADMIN                                                                                                                                                                                        ',
+        ]);
+
+        User::create([
+            'name' => 'Kurator',
+            'email' => 'curator@museum.id',
+            'password' => Hash::make('password'),
+            'role' => 'CURATOR                                                                                                                                                                                    ',
         ]);
     }
 }
